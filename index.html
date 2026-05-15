@@ -4,143 +4,170 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Download The Hub — TinkerHub</title>
+  <link rel="icon" href="icon.png" />
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&f[]=general-sans@400,500,600&display=swap" />
   <style>
-    * {
+    *, *::before, *::after {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: 'General Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       background: #f5f5f5;
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 100vh;
       padding: 24px;
     }
 
     .card {
-      background: #fff;
-      border-radius: 20px;
-      padding: 40px 32px;
-      max-width: 380px;
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 40px 28px 36px;
+      max-width: 360px;
       width: 100%;
       text-align: center;
-      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 2px 24px rgba(0, 0, 0, 0.07);
     }
 
-    .logo {
-      width: 72px;
-      height: 72px;
-      border-radius: 16px;
-      background: #000;
+    .icon-wrap {
+      width: 96px;
+      height: 96px;
+      border-radius: 22px;
+      overflow: hidden;
       margin: 0 auto 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      background: #3BCD74;
     }
 
-    .logo span {
-      color: #fff;
-      font-size: 28px;
-      font-weight: 700;
-      letter-spacing: -1px;
+    .icon-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     h1 {
-      font-size: 22px;
-      font-weight: 700;
-      color: #111;
+      font-family: 'Clash Display', sans-serif;
+      font-size: 26px;
+      font-weight: 600;
+      color: #111111;
+      letter-spacing: -0.5px;
       margin-bottom: 8px;
+      line-height: 1.2;
     }
 
-    p {
-      font-size: 15px;
-      color: #666;
+    .subtitle {
+      font-family: 'General Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+      color: #888888;
       line-height: 1.5;
       margin-bottom: 32px;
     }
 
     .btn {
-      display: block;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       width: 100%;
-      padding: 14px 20px;
-      border-radius: 12px;
+      padding: 13px 20px;
+      border-radius: 100px;
+      font-family: 'Clash Display', sans-serif;
       font-size: 16px;
       font-weight: 600;
       text-decoration: none;
-      transition: opacity 0.15s;
+      transition: opacity 0.15s ease;
+      cursor: pointer;
+      border: none;
     }
 
-    .btn:hover {
-      opacity: 0.85;
+    .btn:active {
+      opacity: 0.75;
     }
 
     .btn-primary {
-      background: #000;
-      color: #fff;
+      background: #111111;
+      color: #ffffff;
       margin-bottom: 12px;
     }
 
     .btn-secondary {
-      background: #f0f0f0;
-      color: #333;
+      background: transparent;
+      color: #111111;
+      border: 1.5px solid #111111;
     }
 
-    .redirecting {
-      font-size: 14px;
-      color: #999;
-      margin-top: 24px;
+    .btn-secondary.hidden {
+      display: none;
+    }
+
+    .divider {
+      height: 1px;
+      background: #f0f0f0;
+      margin: 24px 0;
+    }
+
+    .redirect-note {
+      font-family: 'General Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 400;
+      color: #bbbbbb;
     }
   </style>
 </head>
 <body>
   <div class="card">
-    <div class="logo"><span>TH</span></div>
-    <h1>Download The Hub</h1>
-    <p>The TinkerHub community app — events, programs, and your maker network in one place.</p>
+    <div class="icon-wrap">
+      <img src="icon.png" alt="The Hub" />
+    </div>
 
-    <a id="primary-btn" class="btn btn-primary" href="https://app.tinkerhub.org">
+    <h1>Download The Hub</h1>
+    <p class="subtitle">The TinkerHub community app — events, programs, and your maker network.</p>
+
+    <a id="btn-primary" class="btn btn-primary" href="https://app.tinkerhub.org">
       Download the app
     </a>
-    <a id="secondary-btn" class="btn btn-secondary" href="https://app.tinkerhub.org" style="display:none;">
-      Open another store
+    <a id="btn-secondary" class="btn btn-secondary hidden" href="https://app.tinkerhub.org">
+      Try another store
     </a>
 
-    <p class="redirecting" id="redirect-msg">Taking you to the right store…</p>
+    <div class="divider"></div>
+    <p class="redirect-note" id="redirect-note">Taking you to the right store...</p>
   </div>
 
   <script>
-    var ua = navigator.userAgent || "";
+    var ua        = navigator.userAgent || "";
     var isAndroid = /android/i.test(ua);
-    var isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+    var isIOS     = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
 
     var playStore = "https://play.google.com/store/apps/details?id=com.hoomans.tinkerhub";
     var appStore  = "https://apps.apple.com/in/app/the-hub-of-tinkerhub/id6478268842";
 
-    var primaryBtn   = document.getElementById("primary-btn");
-    var secondaryBtn = document.getElementById("secondary-btn");
-    var redirectMsg  = document.getElementById("redirect-msg");
+    var primary  = document.getElementById("btn-primary");
+    var secondary = document.getElementById("btn-secondary");
+    var note     = document.getElementById("redirect-note");
 
     if (isAndroid) {
-      primaryBtn.href        = playStore;
-      primaryBtn.textContent = "Get it on Google Play";
-      secondaryBtn.href      = appStore;
-      secondaryBtn.textContent = "iOS App Store instead";
-      secondaryBtn.style.display = "block";
+      primary.href        = playStore;
+      primary.textContent = "Get it on Google Play";
+      secondary.href      = appStore;
+      secondary.textContent = "Download on App Store instead";
+      secondary.classList.remove("hidden");
       window.location.replace(playStore);
     } else if (isIOS) {
-      primaryBtn.href        = appStore;
-      primaryBtn.textContent = "Download on the App Store";
-      secondaryBtn.href      = playStore;
-      secondaryBtn.textContent = "Google Play instead";
-      secondaryBtn.style.display = "block";
+      primary.href        = appStore;
+      primary.textContent = "Download on the App Store";
+      secondary.href      = playStore;
+      secondary.textContent = "Get it on Google Play instead";
+      secondary.classList.remove("hidden");
       window.location.replace(appStore);
     } else {
-      primaryBtn.textContent  = "Visit TinkerHub";
-      redirectMsg.textContent = "Open this link on your phone to download the app.";
+      primary.textContent = "Visit TinkerHub";
+      primary.href        = "https://app.tinkerhub.org";
+      note.textContent    = "Open this link on your phone to download the app.";
     }
   </script>
 </body>
